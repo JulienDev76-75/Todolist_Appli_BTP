@@ -1,7 +1,34 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello FrontController!{% endblock %}
+{% block title %}ToDoList - BTP{% endblock %}
 
 {% block body %}
- <p>Coucou tout le monde</p>
+    <h1 class="text-center mb-3">Vos Projets en cours :</h1>
+    <div class="container-fluid">
+        <div class="row">
+            {% for project in projects %}
+            <div class="card col-3 my-3 mx-5 ">
+                <div class="card-header">
+                    <h5 class="card-title">Nom du Projet</h5>
+                    {{project.ProjectName}}
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        
+                        <li class="list-group-item">Description du Projet : {{project.ProjetDescription}}</li>
+                    </ul>
+                    <hr>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Date de création : {{project.ProjetCreation | date('d/m/Y')}}</li>
+                        <li class="list-group-item">Deadline :{{project.ProjetDeadline | date('d/m/Y')}}</li>
+                    </ul>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{{ path('singleProject', {id: project.id}) }}" class="card-link btn btn-dark">Voir le projet</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

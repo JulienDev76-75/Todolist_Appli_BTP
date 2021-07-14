@@ -21,6 +21,7 @@ class RegistrationController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // encode the plain password
+            $user->setNumeroEmploye("N°" . mt_rand(100000, 200000));
             $user->setPassword(
                 $passwordEncoder->encodePassword(
                     $user,
