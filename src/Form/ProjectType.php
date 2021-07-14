@@ -21,7 +21,7 @@ class ProjectType extends AbstractType
             ->add('enregistrer', SubmitType::class, [
                 'attr' => ['class' => 'bg-dark text-white'],
                 'row_attr' => ['class' => 'text-center']
-            ]);;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)
