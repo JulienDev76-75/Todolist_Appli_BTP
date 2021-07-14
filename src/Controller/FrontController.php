@@ -9,10 +9,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Project;
 use App\Entity\User;
 use App\Entity\Tasks;
-use App\Form\AccountType;
-use App\Form\CreditType;
 use App\Form\RegistrationFormType;
 use App\Form\ProjectType;
+use App\Form\TaskType;
 use App\Repository\ProjectRepository;
 use App\Repository\UserRepository;
 use App\Repository\TasksRepository;
@@ -72,31 +71,59 @@ class FrontController extends AbstractController
         $projectRepository = $this->getDoctrine()->getRepository(Project::class);
         $project = $projectRepository->find($id);
 
-        return $this->render('front/singleAccount.html.twig', [
+        return $this->render('front/singleProject.html.twig', [
             'task' => $task,
             'project' => $project,
         ]);
     }
 
-    // #[Route('/index/nouveauprojet/{projectId}/credit', name: 'newTask', requirements: ['projectId' => '\d+'])]
-    // public function newProject(Request $request): Response
+    #[Route('/index/nouvelletache', name: 'newTask')]
+    public function newTask(Request $request): Response
+    {
+        $task = new Tasks();
+        $form = $this->createForm(TaskType::class, $task);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $task->setTaskCreation(new \DateTime());
+            $task->setTaskStatut(1);
+            //$project = $projectRepository->find($id);
+            //$task->setProject($project);
+            // $task->setProject($this->getId());
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($task);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('singleProject');
+        }
+
+        return $this->render('registration/newTask.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    // #[Route('/index/nouvelletache', name: 'newTask', requirements: ['projectId' => '\d+'])]
+    // public function newTask(Request $request, ProjectRepository $projectRepository, int $id): Response
     // {
-    //     $project = new Tasks();
-    //     $form = $this->createForm(TaskType::class, $project);
+    //     $task = new Tasks();
+    //     $form = $this->createForm(TaskType::class, $task);
 
     //     $form->handleRequest($request);
     //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $project->setProjetCreation(new \DateTime());
-    //         $project->setUser($this->getUser());
+    //         $task->setTaskCreation(new \DateTime());
+    //         $task->setTaskStatut(1);
+    //         $project = $projectRepository->find($id);
+    //         $task->setProject($project);
 
     //         $entityManager = $this->getDoctrine()->getManager();
-    //         $entityManager->persist($project);
+    //         $entityManager->persist($task);
     //         $entityManager->flush();
 
-    //         return $this->redirectToRoute('index');
+    //         return $this->redirectToRoute('singleProject');
     //     }
 
-    //     return $this->render('registration/newProject.html.twig', [
+    //     return $this->render('registration/newTask.html.twig', [
     //         'form' => $form->createView()
     //     ]);
     // }
