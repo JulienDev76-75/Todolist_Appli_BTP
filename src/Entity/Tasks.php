@@ -44,7 +44,9 @@ class Tasks
 
     /**
      * @ORM\ManyToOne(targetEntity=Project::class, inversedBy="tasks")
-     */
+     * @ORM\JoinColumn(nullable=false)
+     * */
+
     private $project;
 
     public function getId(): ?int
