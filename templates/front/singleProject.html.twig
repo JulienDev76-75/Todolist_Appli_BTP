@@ -22,9 +22,14 @@
                         <li class="list-group-item">Date de création : {{project.ProjetCreation | date('d/m/Y')}}</li>
                         <li class="list-group-item">Deadline :{{project.ProjetDeadline | date('d/m/Y')}}</li>
                     </ul>
+                      <ul class="list-group list-group-flush">
+                        {# <li class="list-group-item text-danger">Nom de la tâche : {{task.TaskName}}</li>
+                        <li class="list-group-item text-danger">Descrption de la tâche : {{task.TaskDescription}}</li> #}
+                    </ul>
                 </div>
                 <div class="card-footer text-center">
                     <a href="{{ path('newTask', {id: project.id}) }}" class="card-link btn btn-dark">ajouter une tâche</a>
+                    <a href="{{ path('deleteTask', {id: project.id}) }}" class="card-link btn btn-dark">Supprimez la tâche</a>
                 </div>
             </div>
         </div>

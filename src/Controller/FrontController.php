@@ -63,7 +63,7 @@ class FrontController extends AbstractController
     }
 
     #[Route('/index/projet/{id}', name: 'singleProject', requirements: ['id' => '\d+'])]
-    public function singleAccount(int $id, TasksRepository $tasksRepository, $tasks = null): Response
+    public function singleProject(int $id, TasksRepository $tasksRepository, $tasks = null): Response
     {
         $tasksRepository = $this->getDoctrine()->getRepository(Tasks::class);
         $task = $tasksRepository->find($id);
@@ -77,25 +77,26 @@ class FrontController extends AbstractController
         ]);
     }
 
-    #[Route('/index/nouvelletache', name: 'newTask')]
-    public function newTask(Request $request): Response
+    #[Route('/index/projet/{id}/nouvelletache', name: 'newTask', requirements: ['id' => '\d+'])]
+    public function newTask(Request $request, ProjectRepository $projectRepository, int $id): Response
     {
         $task = new Tasks();
         $form = $this->createForm(TaskType::class, $task);
+
+        $project = new Project();
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setTaskCreation(new \DateTime());
             $task->setTaskStatut(1);
-            //$project = $projectRepository->find($id);
-            //$task->setProject($project);
-            // $task->setProject($this->getId());
+            $project = $projectRepository->find($id);
+            $task->setProject($project);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToRoute('singleProject');
+            return $this->redirectToRoute('singleProject', ["id" => $project->getUser()->getId()]);
         }
 
         return $this->render('registration/newTask.html.twig', [
@@ -103,28 +104,15 @@ class FrontController extends AbstractController
         ]);
     }
 
-    // #[Route('/index/nouvelletache', name: 'newTask', requirements: ['projectId' => '\d+'])]
-    // public function newTask(Request $request, ProjectRepository $projectRepository, int $id): Response
-    // {
-    //     $task = new Tasks();
-    //     $form = $this->createForm(TaskType::class, $task);
+    #[Route('/index/projet/{id}/supprimerlatache', name: 'deleteTask', requirements: ['id' => '\d+'])]
+    public function deleteTask(int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $task = $entityManager->getRepository(Tasks::class)->find($id);
 
-    //     $form->handleRequest($request);
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $task->setTaskCreation(new \DateTime());
-    //         $task->setTaskStatut(1);
-    //         $project = $projectRepository->find($id);
-    //         $task->setProject($project);
+        $entityManager->remove($task);
+        $entityManager->flush();
 
-    //         $entityManager = $this->getDoctrine()->getManager();
-    //         $entityManager->persist($task);
-    //         $entityManager->flush();
-
-    //         return $this->redirectToRoute('singleProject');
-    //     }
-
-    //     return $this->render('registration/newTask.html.twig', [
-    //         'form' => $form->createView()
-    //     ]);
-    // }
+        return $this->redirectToRoute('index');
+    }
 }
