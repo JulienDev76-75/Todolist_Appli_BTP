@@ -30,6 +30,15 @@
                   <a href="{{ path('deleteProject', {id: project.id}) }}" class="card-link btn btn-dark" onclick="return confirm('attention ceci va supprimer définitivement votre projet')">Supprimer le projet</a>
             </div>
             {% endfor %}
+            <hr>
+            <hr>
+            <hr>
+            <hr>
+            {% for projects in project %}
+            <div class="card-header">
+                    <h5 class="card-title">{{projects.ProjectName}}</h5>
+            </div>
+            {% endfor %}
         </div>
     </div>
         {% else %}
