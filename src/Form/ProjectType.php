@@ -13,13 +13,19 @@ class ProjectType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('project_name')
-            ->add('projet_description')
+            ->add('project_name', null, [
+                'label' => 'nom de votre projet :'
+            ])
+            ->add('projet_description', null, [
+                'label' => 'description de votre projet :'
+            ])
             // ->add('projet_creation')
-            ->add('projet_deadline')
+            ->add('projet_deadline', null, [
+                'label' => 'deadline de votre projet :'
+            ])
             // ->add('user')
             ->add('enregistrer', SubmitType::class, [
-                'attr' => ['class' => 'bg-dark text-white'],
+                'attr' => ['class' => 'bg-danger text-white'],
                 'row_attr' => ['class' => 'text-center']
             ]);
     }
