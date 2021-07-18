@@ -7,19 +7,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Project;
-use App\Entity\User;
 use App\Entity\Tasks;
-use App\Form\RegistrationFormType;
 use App\Form\ProjectType;
 use App\Form\TaskType;
 use App\Repository\ProjectRepository;
-use App\Repository\UserRepository;
 use App\Repository\TasksRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * Require ROLE_ADMIN for *every* controller method in this class.
- *
  * @IsGranted("IS_AUTHENTICATED_FULLY")
  */
 
@@ -95,15 +90,19 @@ class FrontController extends AbstractController
 
 
     #[Route('/index/projet/{id}/nouvelletache', name: 'newTask', requirements: ['id' => '\d+'])]
-    public function newTask(Request $request): Response
+    public function newTask(Request $request, ProjectRepository $projectRepository, int $id): Response
     {
         $task = new Tasks();
         $form = $this->createForm(TaskType::class, $task);
+
+        $project = new Project();
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setTaskCreation(new \DateTime());
             $task->setTaskStatut("1");
+            $project = $projectRepository->find($id);
+            $task->setProject($project);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
@@ -137,16 +136,16 @@ class FrontController extends AbstractController
         return $this->redirectToRoute('index');
     }
 
-    #[Route('/index/projet/{id}/editstatuto1', name: 'editTaskStatutTo1')]
-    public function editTaskStatutTo1(int $id): Response
-    {
-        $entityManager = $this->getDoctrine()->getManager();
-        $task = $entityManager->getRepository(Tasks::class)->find($id);
-        $task->setTaskStatut('1');
-        $entityManager->flush();
+    // #[Route('/index/projet/{id}/editstatuto1', name: 'editTaskStatutTo1')]
+    // public function editTaskStatutTo1(int $id): Response
+    // {
+    //     $entityManager = $this->getDoctrine()->getManager();
+    //     $task = $entityManager->getRepository(Tasks::class)->find($id);
+    //     $task->setTaskStatut('1');
+    //     $entityManager->flush();
 
-        return $this->redirectToRoute('projectAndTask', ['id' => $task->getProject()->getId()]);
-    }
+    //     return $this->redirectToRoute('projectAndTask', ['id' => $task->getProject()->getId()]);
+    // }
 
     #[Route('/index/projet/{id}/editstatuto0', name: 'editTaskStatutTo0')]
     public function editTaskStatutTo0(int $id): Response
@@ -159,5 +158,3 @@ class FrontController extends AbstractController
         return $this->redirectToRoute('projectAndTask', ['id' => $task->getProject()->getId()]);
     }
 }
-
-//faire un bouton qui set automatiquement le statut a 0 si tu cliques dessus et si tu recliques dessus il le met a un, ca fait deux boutons donc deux fonctions
