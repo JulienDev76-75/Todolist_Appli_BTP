@@ -29,14 +29,15 @@
                             <p> Tâches effectuées : <i class="fas fa-check"></i></p>
                             <li class="list-group-item text-danger">Nom de la tâche : {{task.TaskName}}</li>
                             <li class="list-group-item text-danger">Description de la tâche : {{task.TaskDescription}}</li>
-                            <a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-dark">Supprimez la tâche</a>
+                            <a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-dark" onclick="return confirm('attention ceci va supprimer définitivement votre projet')">Supprimez la tâche</a>
                             <a href="{{ path('editTaskStatutTo0', {id: task.id}) }}" class="card-link btn btn-dark">tâche en cours</a>
                             </ul>
                         {% else %}
-                            <p> Tâches en cours : "<i class='far fa-times-circle'></i></p>
+                            <p> Tâches en cours : <i class='far fa-times-circle'></i></p>
                             <li class="list-group-item text-danger">Nom de la tâche : {{task.TaskName}}</li>
                             <li class="list-group-item text-danger">Description de la tâche : {{task.TaskDescription}}</li>
-                            <a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-dark">Supprimez la tâche</a>
+                            <a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-dark" onclick="return confirm('attention ceci va supprimer définitivement votre tâche')">Supprimez la tâche</a>
+                            <a href="{{ path('editTaskStatutTo1', {id: task.id}) }}" class="card-link btn btn-dark">tâche effectuée</a>
                         {% endif %}
                         {% endfor %}
                     {% else %}
