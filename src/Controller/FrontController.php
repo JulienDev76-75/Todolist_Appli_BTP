@@ -63,40 +63,53 @@ class FrontController extends AbstractController
     }
 
     #[Route('/index/projet/{id}', name: 'singleProject', requirements: ['id' => '\d+'])]
-    public function singleProject(int $id, TasksRepository $tasksRepository, $tasks = null): Response
+    public function singleProject(int $id, ProjectRepository $projectRepository, TasksRepository $tasksRepository): Response
     {
-        $tasksRepository = $this->getDoctrine()->getRepository(Tasks::class);
-        $task = $tasksRepository->find($id);
 
         $projectRepository = $this->getDoctrine()->getRepository(Project::class);
         $project = $projectRepository->find($id);
 
         return $this->render('front/singleProject.html.twig', [
-            'task' => $task,
             'project' => $project,
         ]);
     }
 
+    #[Route('/index/project/{id}/projectAndTask', name: 'projectAndTask', requirements: ['id' => '\d+'])]
+    public function projectAndtask(ProjectRepository $projectRepository, TasksRepository $tasksRepository, $tasks = null, int $id): Response
+    {
+        $projectRepository = $this->getDoctrine()->getRepository(Project::class);
+        $project = $projectRepository->find($id);
+
+        $tasksRepository = $this->getDoctrine()->getRepository(Tasks::class, $tasks);
+        $tasks = $tasksRepository->findBy(
+            ['project' =>  $project],
+        );
+        // dd($tasks);
+
+        return $this->render('front/projectAndTask.html.twig', [
+            'project' => $project,
+            'tasks' => $tasks,
+        ]);
+    }
+
+
+
     #[Route('/index/projet/{id}/nouvelletache', name: 'newTask', requirements: ['id' => '\d+'])]
-    public function newTask(Request $request, ProjectRepository $projectRepository, int $id): Response
+    public function newTask(Request $request): Response
     {
         $task = new Tasks();
         $form = $this->createForm(TaskType::class, $task);
-
-        $project = new Project();
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setTaskCreation(new \DateTime());
             $task->setTaskStatut(1);
-            $project = $projectRepository->find($id);
-            $task->setProject($project);
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToRoute('singleProject', ["id" => $project->getUser()->getId()]);
+            return $this->redirectToRoute('index');
         }
 
         return $this->render('registration/newTask.html.twig', [
@@ -104,15 +117,25 @@ class FrontController extends AbstractController
         ]);
     }
 
-    #[Route('/index/projet/{id}/supprimerlatache', name: 'deleteTask', requirements: ['id' => '\d+'])]
-    public function deleteTask(int $id): Response
+    #[Route('/index/projet/{id}/supprimertache', name: 'deleteTask', requirements: ['id' => '\d+'])]
+    public function deleteTask(Tasks $task): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $task = $entityManager->getRepository(Tasks::class)->find($id);
-
         $entityManager->remove($task);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('projectAndTask', ['id' => $task->getProject()->getId()]);
+    }
+
+    #[Route('/index/projet/{id}/supprimerprojet', name: 'deleteProject')]
+    public function deleteProject(Project $project): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($project);
         $entityManager->flush();
 
         return $this->redirectToRoute('index');
     }
 }
+
+//faire un bouton qui set automatiquement le statut a 0 si tu cliques dessus et si tu recliques dessus il le met a un, ca fait deux boutons donc deux fonctions

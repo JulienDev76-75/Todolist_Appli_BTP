@@ -3,14 +3,14 @@
 {% block title %}ToDoList - BTP{% endblock %}
 
 {% block body %}
-    <h1 class="text-center mb-3">Vos Projets en cours :</h1>
     <div class="container-fluid">
         <div class="row">
+    {% if projects is not empty %}
+       <h1 class="text-center">Vos projets en cours :</h1>
             {% for project in projects %}
             <div class="card col-3 my-3 mx-5 ">
                 <div class="card-header">
-                    <h5 class="card-title">Nom du Projet</h5>
-                    {{project.ProjectName}}
+                    <h5 class="card-title">{{project.ProjectName}}</h5>
                 </div>
 
                 <div class="card-body">
@@ -27,8 +27,12 @@
                 <div class="card-footer text-center">
                     <a href="{{ path('singleProject', {id: project.id}) }}" class="card-link btn btn-dark">Voir le projet</a>
                 </div>
+                  <a href="{{ path('deleteProject', {id: project.id}) }}" class="card-link btn btn-dark" onclick="return confirm('attention ceci va supprimer définitivement votre projet')">Supprimer le projet</a>
             </div>
             {% endfor %}
         </div>
     </div>
+        {% else %}
+        <h1 class="text-center mb-3">Enregistrez votre premier projet !</h1>
+        {% endif %}
 {% endblock %}

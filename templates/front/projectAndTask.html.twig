@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ToDoList - BTP{% endblock %}
+
+{% block body %}
+     <h1 class="text-center mb-3">Votre Projet :</h1>
+    <div class="container-fluid">
+        <div class="row d-flex justify-content-center">
+            <div class="card col-3 my-3 mx-5 ">
+                <div class="card-header">
+                    <h5 class="card-title">{{project.ProjectName}}</h5>
+                </div>
+
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        
+                        <li class="list-group-item">Description du Projet : {{project.ProjetDescription}}</li>
+                    </ul>
+                    <hr>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Date de création : {{project.ProjetCreation | date('d/m/Y')}}</li>
+                        <li class="list-group-item">Deadline :{{project.ProjetDeadline | date('d/m/Y')}}</li>
+                    </ul>
+                    {% if tasks is not empty %}
+                        {% for task in tasks %}
+                            <ul class="list-group list-group-flush">
+                            <li class="list-group-item text-danger">Nom de la tâche : {{task.TaskName}}</li>
+                            <li class="list-group-item text-danger">Description de la tâche : {{task.TaskDescription}}</li>
+                            <a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-dark">Supprimez la tâche</a>                            </ul>
+                        {% endfor %}
+                    {% else %}
+                            <p>Veuillez ajouter une tâche</p>
+                    {% endif %}    
+            </div>
+        </div>
+    </div>
+{% endblock %}
