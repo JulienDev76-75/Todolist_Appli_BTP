@@ -23,10 +23,19 @@
                     </ul>
                     {% if tasks is not empty %}
                         {% for task in tasks %}
+                        {% if task.TaskStatut == "1" %}
                             <ul class="list-group list-group-flush">
+                            <p> alors statut est OK : <i class="fas fa-check"></i></p>
                             <li class="list-group-item text-danger">Nom de la tâche : {{task.TaskName}}</li>
                             <li class="list-group-item text-danger">Description de la tâche : {{task.TaskDescription}}</li>
-                            <a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-dark">Supprimez la tâche</a>                            </ul>
+                            <a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-dark">Supprimez la tâche</a>
+                            </ul>
+                        {% else %}
+                            <p>alors statut est KO : "<i class='far fa-times-circle'></i></p>
+                            <li class="list-group-item text-danger">Nom de la tâche : {{task.TaskName}}</li>
+                            <li class="list-group-item text-danger">Description de la tâche : {{task.TaskDescription}}</li>
+                            <a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-dark">Supprimez la tâche</a>
+                        {% endif %}
                         {% endfor %}
                     {% else %}
                             <p>Veuillez ajouter une tâche</p>

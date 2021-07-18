@@ -103,7 +103,7 @@ class FrontController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setTaskCreation(new \DateTime());
-            $task->setTaskStatut(1);
+            $task->setTaskStatut("1");
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($task);
@@ -135,6 +135,28 @@ class FrontController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('index');
+    }
+
+    #[Route('/index/projet/{id}/editstatuto1', name: 'editTaskStatutTo1')]
+    public function editTaskStatutTo1(int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $task = $entityManager->getRepository(Tasks::class)->find($id);
+        $task->setTaskStatut('1');
+        $entityManager->flush();
+
+        return $this->redirectToRoute('projectAndTask', ['id' => $task->getProject()->getId()]);
+    }
+
+    #[Route('/index/projet/{id}/editstatuto0', name: 'editTaskStatutTo0')]
+    public function editTaskStatutTo0(int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $task = $entityManager->getRepository(Tasks::class)->find($id);
+        $task->setTaskStatut('0');
+        $entityManager->flush();
+
+        return $this->redirectToRoute('projectAndTask', ['id' => $task->getProject()->getId()]);
     }
 }
 
