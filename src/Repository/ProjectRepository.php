@@ -48,3 +48,13 @@ class ProjectRepository extends ServiceEntityRepository
     }
     */
 }
+
+
+// public function getProjects() {
+//     return $this->createQueryBuilder('s')
+//         ->orderBy('s.deadline', 'DESC')
+//         ->setMaxResults(10)
+//         ->getQuery()
+//         ->getResult()
+//     ;
+// }

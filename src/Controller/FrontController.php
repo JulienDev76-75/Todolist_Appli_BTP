@@ -7,19 +7,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Project;
-use App\Entity\User;
 use App\Entity\Tasks;
-use App\Form\RegistrationFormType;
 use App\Form\ProjectType;
 use App\Form\TaskType;
 use App\Repository\ProjectRepository;
-use App\Repository\UserRepository;
 use App\Repository\TasksRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 /**
- * Require ROLE_ADMIN for *every* controller method in this class.
- *
  * @IsGranted("IS_AUTHENTICATED_FULLY")
  */
 
@@ -29,9 +24,10 @@ class FrontController extends AbstractController
     #[Route('/index', name: 'index')]
     public function index(): Response
     {
-        $projetRepository = $this->getDoctrine()->getRepository(Project::class);
-        $projects = $projetRepository->findby(
+        $projectRepository = $this->getDoctrine()->getRepository(Project::class);
+        $projects = $projectRepository->findby(
             ['user' => $this->getUser()],
+            ['projet_deadline' => 'DESC'],
         );
 
         return $this->render('front/index.html.twig', [
@@ -54,6 +50,11 @@ class FrontController extends AbstractController
             $entityManager->persist($project);
             $entityManager->flush();
 
+            $this->addFlash(
+                "success",
+                "Votre projet a bien été ouvert, vous n'avez plus qu'à mettre vos premières tâches afin d'atteindre vos objectifs ! :)"
+            );
+
             return $this->redirectToRoute('index');
         }
 
@@ -63,17 +64,32 @@ class FrontController extends AbstractController
     }
 
     #[Route('/index/projet/{id}', name: 'singleProject', requirements: ['id' => '\d+'])]
-    public function singleProject(int $id, TasksRepository $tasksRepository, $tasks = null): Response
+    public function singleProject(int $id, ProjectRepository $projectRepository, TasksRepository $tasksRepository): Response
     {
-        $tasksRepository = $this->getDoctrine()->getRepository(Tasks::class);
-        $task = $tasksRepository->find($id);
 
         $projectRepository = $this->getDoctrine()->getRepository(Project::class);
         $project = $projectRepository->find($id);
 
         return $this->render('front/singleProject.html.twig', [
-            'task' => $task,
             'project' => $project,
+        ]);
+    }
+
+    #[Route('/index/project/{id}/projectAndTask', name: 'projectAndTask', requirements: ['id' => '\d+'])]
+    public function projectAndtask(ProjectRepository $projectRepository, TasksRepository $tasksRepository, $tasks = null, int $id): Response
+    {
+        $projectRepository = $this->getDoctrine()->getRepository(Project::class);
+        $project = $projectRepository->find($id);
+
+        $tasksRepository = $this->getDoctrine()->getRepository(Tasks::class, $tasks);
+        $tasks = $tasksRepository->findBy(
+            ['project' =>  $project],
+        );
+        // dd($tasks);
+
+        return $this->render('front/projectAndTask.html.twig', [
+            'project' => $project,
+            'tasks' => $tasks,
         ]);
     }
 
@@ -88,7 +104,7 @@ class FrontController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $task->setTaskCreation(new \DateTime());
-            $task->setTaskStatut(1);
+            $task->setTaskStatut("1");
             $project = $projectRepository->find($id);
             $task->setProject($project);
 
@@ -96,7 +112,12 @@ class FrontController extends AbstractController
             $entityManager->persist($task);
             $entityManager->flush();
 
-            return $this->redirectToRoute('singleProject', ["id" => $project->getUser()->getId()]);
+            $this->addFlash(
+                "success",
+                "Votre tâche a bien été ajoutée ;-)"
+            );
+
+            return $this->redirectToRoute('index');
         }
 
         return $this->render('registration/newTask.html.twig', [
@@ -104,15 +125,45 @@ class FrontController extends AbstractController
         ]);
     }
 
-    #[Route('/index/projet/{id}/supprimerlatache', name: 'deleteTask', requirements: ['id' => '\d+'])]
-    public function deleteTask(int $id): Response
+    #[Route('/index/projet/{id}/supprimertache', name: 'deleteTask', requirements: ['id' => '\d+'])]
+    public function deleteTask(Tasks $task): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $task = $entityManager->getRepository(Tasks::class)->find($id);
-
         $entityManager->remove($task);
         $entityManager->flush();
 
+        return $this->redirectToRoute('projectAndTask', ['id' => $task->getProject()->getId()]);
+    }
+
+    #[Route('/index/projet/{id}/supprimerprojet', name: 'deleteProject')]
+    public function deleteProject(Project $project): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($project);
+        $entityManager->flush();
+
         return $this->redirectToRoute('index');
+    }
+
+    #[Route('/index/projet/{id}/editstatuto1', name: 'editTaskStatutTo1')]
+    public function editTaskStatutTo1(int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $task = $entityManager->getRepository(Tasks::class)->find($id);
+        $task->setTaskStatut('1');
+        $entityManager->flush();
+
+        return $this->redirectToRoute('projectAndTask', ['id' => $task->getProject()->getId()]);
+    }
+
+    #[Route('/index/projet/{id}/editstatuto0', name: 'editTaskStatutTo0')]
+    public function editTaskStatutTo0(int $id): Response
+    {
+        $entityManager = $this->getDoctrine()->getManager();
+        $task = $entityManager->getRepository(Tasks::class)->find($id);
+        $task->setTaskStatut('0');
+        $entityManager->flush();
+
+        return $this->redirectToRoute('projectAndTask', ['id' => $task->getProject()->getId()]);
     }
 }

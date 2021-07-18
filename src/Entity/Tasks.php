@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TasksRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TasksRepository::class)
@@ -19,12 +20,17 @@ class Tasks
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank  
+     * @Assert\Type("string")
      */
+
     private $task_name;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank  
      */
+
     private $task_description;
 
     /**
@@ -34,7 +40,12 @@ class Tasks
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Expression(
+     * "this.getTaskDeadline() >= this.getTaskDeadline()",
+     * message="votre deadline doit être supérieure à la date d'aujourd'hui"
+     * )
      */
+
     private $task_deadline;
 
     /**
