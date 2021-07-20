@@ -25,12 +25,12 @@
                     </ul>
                 </div>
                 <div class="card-footer text-center">
-                    <a href="{{ path('singleProject', {id: project.id}) }}" class="card-link btn btn-danger text-white mb-2 mt-2">Voir le projet</a></br>
+                    <a href="{{ path('projectAndTask', {id: project.id}) }}" class="card-link btn btn-danger text-white mb-2 mt-2">Voir le projet</a></br>
                     <a href="{{ path('deleteProject', {id: project.id}) }}" class="card-link btn btn-danger text-white mb-2" onclick="return confirm('Attention ! Ceci va supprimer définitivement votre projet. Cliquez sur ok pour valider')">Supprimer</a>
                 </div>
             </div>
             {% endfor %}
-            <hr>
+            {# <hr>
             <hr>
             <hr>
             <hr>
@@ -38,7 +38,7 @@
             <div class="card-header">
                     <h5 class="card-title">{{projects.ProjectName}}</h5>
             </div>
-            {% endfor %}
+            {% endfor %} #}
         </div>
     </div>
         {% else %}

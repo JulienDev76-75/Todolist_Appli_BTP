@@ -21,6 +21,7 @@
                         <li class="list-group-item">Date de création : {{project.ProjetCreation | date('d/m/Y')}}</li>
                         <li class="list-group-item">Deadline :{{project.ProjetDeadline | date('d/m/Y')}}</li>
                     </ul>
+                    <a href="{{ path('newTask', {id: project.id}) }}" class="card-link btn btn-dark">ajouter tâche</a>
         
                     {% if tasks is not empty %}
                         {% for task in tasks %}

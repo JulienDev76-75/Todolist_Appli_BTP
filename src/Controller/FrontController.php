@@ -67,18 +67,6 @@ class FrontController extends AbstractController
         ]);
     }
 
-    #[Route('/index/projet/{id}', name: 'singleProject', requirements: ['id' => '\d+'])]
-    public function singleProject(int $id, ProjectRepository $projectRepository, TasksRepository $tasksRepository): Response
-    {
-
-        $projectRepository = $this->getDoctrine()->getRepository(Project::class);
-        $project = $projectRepository->find($id);
-
-        return $this->render('front/singleProject.html.twig', [
-            'project' => $project,
-        ]);
-    }
-
     #[Route('/index/project/{id}/projectAndTask', name: 'projectAndTask', requirements: ['id' => '\d+'])]
     public function projectAndtask(ProjectRepository $projectRepository, TasksRepository $tasksRepository, $tasks = null, int $id): Response
     {
