@@ -1,4 +1,6 @@
+/* from 360 until 959 px */
 /* > 960 px */
+@media screen and (min-width: 960px) {
 nav {
     height : 6vh;
 }
@@ -30,16 +32,11 @@ header .cardfooter a {
     height : 100%;
 }
 
-.card {
-    background-color : #E25039;
-}
-
-main {
-    background-color : #E25039;
-}
 
 footer {
     height : 20vh;
     background-color : #E25039;
+}
+
 }
 
