@@ -30,12 +30,8 @@ class FrontController extends AbstractController
             ['projet_deadline' => 'DESC'],
         );
 
-        $projectRepository = $this->getDoctrine()->getRepository(Project::class);
-        $project =  $projectRepository->findAll();
-
         return $this->render('front/index.html.twig', [
             'projects' => $projects,
-            'project' => $project,
         ]);
     }
 
@@ -75,7 +71,12 @@ class FrontController extends AbstractController
 
         $tasksRepository = $this->getDoctrine()->getRepository(Tasks::class, $tasks);
         $tasks = $tasksRepository->findBy(
-            ['project' =>  $project],
+            [
+                'project' =>  $project
+            ],
+            [
+                'task_deadline' => 'ASC'
+            ],
         );
         // dd($tasks);
 

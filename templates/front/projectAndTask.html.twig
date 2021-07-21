@@ -3,48 +3,76 @@
 {% block title %}ToDoList - BTP{% endblock %}
 
 {% block body %}
-     <h1 class="text-center mb-3">Votre Projet :</h1>
+    <h1 class="text-center mb-5 mt-5">Votre Projet :</h1>
     <div class="container-fluid">
-        <div class="row d-flex justify-content-center">
-            <div class="card col-3 my-3 mx-5 ">
-                <div class="card-header">
-                    <h5 class="card-title">{{project.ProjectName}}</h5>
-                </div>
-
+        <div class="row d-flex justify-content-center bg-light">
+            <div class="card w-50 my-3 mx-5">
+                    <h5 class="card-title mt-3 text-center">{{project.ProjectName}}</h5>
                 <div class="card-body">
                     <ul class="list-group list-group-flush">
-                        
                         <li class="list-group-item">Description du Projet : {{project.ProjetDescription}}</li>
                     </ul>
                     <hr>
                     <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Date de création : {{project.ProjetCreation | date('d/m/Y')}}</li>
-                        <li class="list-group-item">Deadline :{{project.ProjetDeadline | date('d/m/Y')}}</li>
+                        <li class="list-group-item mb-2">Date de création : {{project.ProjetCreation | date('d/m/Y')}}</li>
+                        <li class="list-group-item text-danger">Deadline : {{project.ProjetDeadline | date('d/m/Y')}}</li>
                     </ul>
-                    <a href="{{ path('newTask', {id: project.id}) }}" class="card-link btn btn-dark">ajouter tâche</a>
-        
-                    {% if tasks is not empty %}
-                        {% for task in tasks %}
-                        {% if task.TaskStatut == "1" %}
-                            <ul class="list-group list-group-flush">
-                            <p> Tâches effectuées : <i class="fas fa-check"></i></p>
-                            <li class="list-group-item text-danger">Nom de la tâche : {{task.TaskName}}</li>
-                            <li class="list-group-item text-danger">Description de la tâche : {{task.TaskDescription}}</li>
-                            <a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-dark" onclick="return confirm('attention ceci va supprimer définitivement votre projet')">Supprimez la tâche</a>
-                            <a href="{{ path('editTaskStatutTo0', {id: task.id}) }}" class="card-link btn btn-dark">tâche en cours</a>
-                            </ul>
-                        {% else %}
-                            <p> Tâches en cours : <i class='far fa-times-circle'></i></p>
-                            <li class="list-group-item text-danger">Nom de la tâche : {{task.TaskName}}</li>
-                            <li class="list-group-item text-danger">Description de la tâche : {{task.TaskDescription}}</li>
-                            <a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-dark" onclick="return confirm('attention ceci va supprimer définitivement votre tâche')">Supprimez la tâche</a>
-                            <a href="{{ path('editTaskStatutTo1', {id: task.id}) }}" class="card-link btn btn-dark">tâche effectuée</a>
-                        {% endif %}
-                        {% endfor %}
-                    {% else %}
-                            <p>Veuillez ajouter une tâche</p>
-                    {% endif %}    
+                    <div class="d-flex flex-row justify-content-center">
+                    <hr>
+                        <a href="{{ path('newTask', {id: project.id}) }}" class="card-link btn btn-danger text-center mt-2">ajouter tâche</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <h2 class="text-center mb-5 mt-5">Vos tâches :</h2>
+    <div class="container-fluid w-75">
+        <table class="table  table-bordered mb-5 mt-5">
+            <thead>
+                <tr>
+                    <th scope="col">Nom de votre tâche </th>
+                    <th scope="col">Description de votre tâche</th>
+                    <th scope="col">Date de création</th>
+                    <th scope="col">Deadline</th>
+                    <th scope="col">Statut</th>
+                    <th scope="col">Supprimer</th>
+                    <th scope="col">Editer</th>
+                </tr>
+            </thead>
+            {% if tasks is not empty %}
+                {% for task in tasks %}
+                    {% if task.TaskStatut == "1" %}
+                        <tbody>
+                            <tr>
+                                <td class="text-dark">{{task.TaskName}}</td>
+                                <td class="text-dark">{{task.TaskDescription}}</td>
+                                <td class="text-dark">{{task.TaskCreation | date('d/m/Y')}}</td>
+                                <td class="text-danger">{{task.TaskDeadline | date('d/m/Y')}}</td>
+                                <td><i class='fas fa-check'></i></td>
+                                <td><a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-danger" onclick="return confirm('attention ceci va supprimer définitivement votre projet')">Supprimez la tâche</a></td>
+                                <td><a href="{{ path('editTaskStatutTo0', {id: task.id}) }}" class="card-link btn btn-dark">tâche en cours</a></td>
+                            </tr>
+                    {% else %}
+                        <tbody>
+                            <tr>
+                                <td class="text-dark">{{task.TaskName}}</td>
+                                <td class="text-dark">{{task.TaskDescription}}</td>
+                                <td class="text-dark">{{task.TaskCreation | date('d/m/Y')}}</td>
+                                <td class="text-danger">{{task.TaskDeadline | date('d/m/Y')}}</td>
+                                <td><i class='far fa-times-circle'></i></td>
+                                <td><a href="{{ path('deleteTask', {id: task.id}) }}" class="card-link btn btn-danger" onclick="return confirm('attention ceci va supprimer définitivement votre projet')">Supprimez la tâche</a></td>
+                                <td><a href="{{ path('editTaskStatutTo1', {id: task.id}) }}" class="card-link btn btn-dark">tâche effectuée</a></td>
+                            </tr>
+                    {% endif %}
+                {% endfor %}
+                        </tbody>
+        </table>
+            {% else %}
+            <div class="d-flex flex-row justify-content-center">
+                <p class="mt-5 mb-5 bg-light border border-dark text-center w-25 text-dark">Veuillez ajouter votre première tâche :)</p>
+            </div>
+            {% endif %}  
+    </div>
 {% endblock %}
+

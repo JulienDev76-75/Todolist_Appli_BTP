@@ -40,10 +40,7 @@ class Tasks
 
     /**
      * @ORM\Column(type="datetime")
-     * @Assert\Expression(
-     * "this.getTaskDeadline() >= this.getTaskDeadline()",
-     * message="votre deadline doit être supérieure à la date d'aujourd'hui"
-     * )
+     * @Assert\GreaterThan("today")
      */
 
     private $task_deadline;

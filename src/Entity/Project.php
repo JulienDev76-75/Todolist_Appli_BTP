@@ -47,6 +47,7 @@ class Project
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\GreaterThan("today")
      */
 
     private $projet_deadline;

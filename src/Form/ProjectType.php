@@ -25,7 +25,7 @@ class ProjectType extends AbstractType
             ])
             // ->add('user')
             ->add('enregistrer', SubmitType::class, [
-                'attr' => ['class' => 'bg-danger text-white'],
+                'attr' => ['class' => 'bg-danger text-white w-50 mt-3 mb-5'],
                 'row_attr' => ['class' => 'text-center']
             ]);
     }
