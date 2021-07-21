@@ -1,0 +1,42 @@
+/* from 360 until 959 px */
+/* > 960 px */
+@media screen and (min-width: 960px) {
+nav {
+    height : 6vh;
+}
+
+.logo-nav {
+    height : 100px;
+    padding-right : 50px;
+}
+
+header {
+    height : 20vh;
+    background-color: #E25039;
+}
+
+header, body, main, footer {
+    font-family: 'Lobster', cursive;
+}
+
+header p {
+    font-size : 60px;
+    font-style : italic;
+}
+
+header .cardfooter a {
+    color : #E25039;
+}
+
+.card-index {
+    height : 100%;
+}
+
+
+footer {
+    height : 20vh;
+    background-color : #E25039;
+}
+
+}
+

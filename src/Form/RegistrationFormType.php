@@ -45,10 +45,6 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
-            ])
-            ->add('enregistrer', SubmitType::class, [
-                'attr' => ['class' => 'bg-danger text-white'],
-                'row_attr' => ['class' => 'text-center']
             ]);
     }
 

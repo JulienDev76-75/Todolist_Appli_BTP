@@ -3,45 +3,35 @@
 {% block title %}ToDoList - BTP{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
+    <div class="container-fluid w-75">
         <div class="row">
     {% if projects is not empty %}
-       <h1 class="text-center">Vos projets en cours :</h1>
+        <h1 class="text-center mb-5 mt-5 text-dark">Vos projets en cours :</h1>
             {% for project in projects %}
-            <div class="card col-3 my-3 mx-5 ">
-                <div class="card-header">
-                    <h5 class="card-title">{{project.ProjectName}}</h5>
-                </div>
-
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        
-                        <li class="list-group-item">Description du Projet : {{project.ProjetDescription}}</li>
-                    </ul>
-                    <hr>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Date de création : {{project.ProjetCreation | date('d/m/Y')}}</li>
-                        <li class="list-group-item">Deadline :{{project.ProjetDeadline | date('d/m/Y')}}</li>
-                    </ul>
-                </div>
-                <div class="card-footer text-center">
-                    <a href="{{ path('singleProject', {id: project.id}) }}" class="card-link btn btn-danger text-white mb-2 mt-2">Voir le projet</a></br>
-                    <a href="{{ path('deleteProject', {id: project.id}) }}" class="card-link btn btn-danger text-white mb-2" onclick="return confirm('Attention ! Ceci va supprimer définitivement votre projet. Cliquez sur ok pour valider')">Supprimer</a>
+            <div class="card row col-4 col-md-3 col-lg-4 g-4 mb-5 h-auto">
+                <div class="col">
+                    <div class="card-header">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{project.ProjectName}}</h5>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item bg-light">Description du Projet : {{project.ProjetDescription}}</li>
+                                <li class="list-group-item pb-2">Date de création : {{project.ProjetCreation | date('d/m/Y')}}</li>
+                                <li class="list-group-item pb-2 text-danger">Deadline : {{project.ProjetDeadline | date('d/m/Y')}}</li>
+                            </ul>
+                            <div class="card-footer text-center">
+                                <a href="{{ path('projectAndTask', {id: project.id}) }}" class="card-link btn btn-danger text-white mb-2 mt-2">Voir le projet</a></br>
+                                <a href="{{ path('deleteProject', {id: project.id}) }}" class="card-link btn btn-danger text-white mb-2" onclick="return confirm('Attention ! Ceci va supprimer définitivement votre projet. Cliquez sur ok pour valider')">Supprimer</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             {% endfor %}
-            <hr>
-            <hr>
-            <hr>
-            <hr>
-            {% for projects in project %}
-            <div class="card-header">
-                    <h5 class="card-title">{{projects.ProjectName}}</h5>
-            </div>
-            {% endfor %}
+            <h1 class="text-center mb-5 mt-5 text-dark">Vos projets archivés :</h1>
         </div>
     </div>
-        {% else %}
-        <h1 class="text-center mb-3">Enregistrez votre premier projet !</h1>
-        {% endif %}
+    {% else %}
+        <h1 class="text-center my-5 text-dark">Enregistrez votre premier projet !</h1>
+    {% endif %}
 {% endblock %}
+
